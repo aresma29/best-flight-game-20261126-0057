@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EMBER WING — Wildfire Airtanker</title>
+<style>
+  html, body { margin: 0; padding: 0; background: #0a141e; height: 100%; }
+  body { display: flex; flex-direction: column; align-items: center; justify-content: center; font-family: sans-serif; }
+  canvas { width: min(1280px, 100vw); height: auto; display: block; background: #2f6fb2; }
+  .hint { color: #9fc6e8; font-size: 13px; margin-top: 8px; text-align: center; }
+</style>
+</head>
+<body>
+<canvas id="game" width="1280" height="720" aria-label="EMBER WING — Wildfire Airtanker game"></canvas>
+<noscript><p style="color:#eaf6ff">EMBER WING needs JavaScript to fly.</p></noscript>
+<div class="hint">EMBER WING — Wildfire Airtanker · arrows pitch &amp; bank · W/S throttle · SPACE drop water · P pause</div>
+<script type="module" src="./src/main.js"></script>
+</body>
+</html>

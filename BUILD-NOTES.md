@@ -1,0 +1,30 @@
+# best-flight-game-20261126-0057 — BUILD-NOTES
+
+## Comp
+- Slug: best-flight-game-20261126-0057 — "Make the best flight game" — $500 pot, 50 paid (1st $100, 2nd $55, 3rd $30), FREE, harness program/v1, blind rounds (NOT strict transcripts — bundle flow).
+- Opened 26 Nov 00:57 WIB, entries close 28 Nov 07:57 WIB. Rounds: R1 26 Nov 19:57 WIB, R2 27 Nov 07:57 WIB, R3 27 Nov 19:57 WIB, R4/final 28 Nov 07:57 WIB. Result due ~14 Dec.
+- Field 3,258 submissions at ~12:05 WIB fetch (was 1,708 at 09:55 WIB). Leaderboard API returns 0 rows — blind rounds, no public scores/ranks; top-10 analysis done from the detail endpoint's submissions list instead.
+- Judge: AI pairwise on screenshots + source outline; rank by win rate. Final = top dev board → Swiss + playoff (per comp rules). Max 10 subs/day, 20 total; last submission before deadline is final unless an earlier finished entry is picked.
+- Deliverables: public GitHub repo (created after comp opens), main.ts (Node 22) at root, vendor/makefun-game.ts copied from kit UNCHANGED, game/ static files (index.html plays offline in desktop Chrome, no network), 3–4 screenshots under screenshots/ (first by name = cover, each ≤256 KiB, long ≤1280, short ≥480), transcripts.
+- Checklist the judge sees (from the comp description): cockpit or chase view over recognisable terrain, aircraft in frame with instruments lit, runway or target ring ahead, altitude/speed/heading on the HUD.
+
+## Top-10 analysis (coordinator, live fetch 26 Nov ~12:05 WIB)
+- No public leaderboard (blind) — analysis from the 3,258 recent-submission titles in the detail endpoint.
+- The field is FLOODED with "Sky Courier / Ring Run" clones: Merpati Sky Courier, Vela Sky Courier, Skybound: Ring Run, Sky Courier: Ring Runner over Coral Isles, Kestrel Ridge Run, Skyhook bush-pilot courier, Langit Nusantara: Island Airlift, Ember Valley Courier, etc.
+- Differentiator chosen: WILDFIRE AIRTANKER, not another courier — orange fire fronts, smoke columns, blue lake, burning ridge, airstrip. Visually distinct from the golden-hour courier swarm, with real depth (scoop → climb → drop → refill, wind, fire-spread timer, fuel).
+
+## Build
+- Builder spawned 26 Nov ~12:06 WIB (build only). BUILT 26 Nov ~12:14 WIB. Builder 27bf3c4e, init anchor 143d876f48e6d91ac32aabca19371c3c7c436ff1, drand round 34288707. Commit PENDING (execution-risk flag on makefun init; commit needs Mot's per-batch go-ahead).
+- Game: "EMBER WING — Wildfire Airtanker". 2D canvas, vanilla JS, no libraries, no network. Chase view over a mountain valley with a lake, a burning ridge, runway 27. Scoop water flying low over the lake, drop on fire fronts (target ring + steering arrow ahead), fire spreads on a timer, wind gusts, fuel drains — land low over the airstrip to refuel. 240s shift, score = hectares saved + fires out. HUD: altitude, speed, heading + compass strip, water tank, fuel, score, fire remaining, time, lit attitude gauge. Title / play / paused / over screens; WebAudio synth; keyboard (arrows pitch/bank, W/S throttle, Space drop, P pause) + mouse menus.
+- Files (all composed fresh by the builder; kit starter read only as reference; cooking-game BUILD-NOTES read as flow pattern only — no code copied from the cooking entry):
+  - game/index.html, game/src/config.js, random.js (seeded RNG), input.js, world.js, render.js, audio.js, shots.js, main.js
+  - main.ts — Node 22 stdlib only; copies game/ + screenshots/ to MAKEFUN_OUTPUT_DIR, writes dossier.json via buildDossier (named import) from vendor/makefun-game.ts
+  - vendor/makefun-game.ts — copied byte-identical from kit, sha256 dc67187521b24025ff952f8c231485a6eb92d6d71d29edd2a08154ffb4376129 (matches kit manifest; all 24 kit files verified by builder)
+  - README.md — 3 link-wrapped live badges, no shields.io
+  - LICENSE MIT (from init)
+- Screenshots (real renders, headless Chromium 1255, never edited): 1-cover.jpg 82,733 B sha256 efce2d78… (play, score 212, tank 75%, DIRECT HIT +212, 11.4 ha saved); 2-start.jpg 70,639 B sha256 5438a81d… (title); 3-drop.jpg 80,629 B sha256 fdc23514… (water stream on a fire); 4-end.jpg 66,301 B sha256 0807b334… (SHIFT COMPLETE, score 212). All 1280×720, all ≤256 KiB.
+- Testing (by builder): key-only playtest PASS (title → start → cruise → scooping=true, tank 6→30% → Space drop tank −25, drops 0→1 → P pause → P resume — the pause test caught and fixed a real bug: pause key could never resume because the pause check ran before the paused-screen check) → 0 page exceptions. Staged shots ?shot=start|play|drop|end&seed=1 deterministic from real rules. main.ts under Node 22: MAKEFUN_OUTPUT_DIR=/tmp/ember-out → exit 0, out holds game/ + screenshots/ + dossier.json (parses; keys cover/images/schema/text; cover index 0; 4 images; 450,545 B). Zero http strings in game/; all 8 JS files pass node --check.
+- Coordinator verification: file listing + screenshot sha256 match builder claims; cover/drop/end shots read visually — HUD (ALT/SPD/HDG + compass strip, tank, fuel, score, fire left, time, attitude gauge), plane in frame, fires, drop-zone ring, runway "27" in the distance, lake — all checklist items read clearly. Transcript check (adapted check-thinking-revised algorithm, path-matched, /tmp/check-flight-revised.py): SAFE — every shipped file ≥2 messages AND ≥2 distinct contents in builder session 27bf3c4e (index.html 2/2, config 3/5, random 2/2, input 2/2, world 3/6, render 4/7, audio 2/2, shots 3/5, main.js 3/3, main.ts 2/2, README 2/2). main.ts + README read back correct (named buildDossier import, 3 live link-wrapped badges).
+- Observation (not a blocker): the staged end screen shows 1 drop, 11.4 ha saved, fires out 0/6 — the autopilot demo run is thin. Mechanics are proven (scoop + drop + scoring + pause/resume); a richer demo run would need autopilot tuning, not a rebuild.
+- Builder note: two exec results failed during the build (one SIGTERM, one exit 1 — test-process kills); final verifications all passed after them.
+- Status: BUILT, verified, commit pending. Ready for the submit coordinator (commit + bundle + submit) on Mot's go-ahead. Submit before R1 cutoff 26 Nov 19:57 WIB to count from round 1.
